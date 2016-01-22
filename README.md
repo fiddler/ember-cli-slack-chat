@@ -1,26 +1,12 @@
 # Ember-cli-slack-chat
 
-This README outlines the details of collaborating on this Ember addon.
+Ember-cli-slack-chat enables easily adding a support chat backed by Slack to your ember-cli app.
 
 ## Installation
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+* `npm install ember-cli-slack-chat --save-dev`
 
-## Running
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+## Status
 
-## Running Tests
-
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+Under development. Check back later.

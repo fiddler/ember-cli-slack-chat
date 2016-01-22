@@ -1,7 +1,7 @@
 {
   "name": "ember-cli-slack-chat",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.0.1",
+  "description": "Add Slack backed support chat to your ember-cli-app.",
   "directories": {
     "doc": "doc",
     "test": "tests"
