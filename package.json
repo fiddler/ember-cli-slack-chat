@@ -11,11 +11,11 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "",
+  "repository": "https://github.com/fiddler/ember-cli-slack-chat",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Jussi Kaijalainen",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.2.0",
@@ -38,7 +38,10 @@
     "ember-try": "~0.0.8"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "slack",
+    "chat",
+    "customer support"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.5"

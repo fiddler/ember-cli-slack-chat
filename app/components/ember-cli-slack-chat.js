@@ -1,3 +1,3 @@
 import Ember from 'ember';
-import EmberCliSlackChat from 'ember-cli-slack-chat/components/ember-cli-slack-chat';
-export default EmberCliSlackChat;
+import EmberSlackChat from 'ember-cli-slack-chat/components/ember-slack-chat';
+export default EmberSlackChat;
