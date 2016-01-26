@@ -32,3 +32,9 @@ The component supports following options:
 The below screenshot illustrates how the options affect the component:
 
 ![Ember-cli-slack-chat example](/ember-cli-slack-chat-screenshot.png?raw=true)
+
+## TODO
+
+* Online indicator
+* Show more details about the user on channel creation (general info & allow passing user info in options array)
+* Indicator for received messages if panel is closed
