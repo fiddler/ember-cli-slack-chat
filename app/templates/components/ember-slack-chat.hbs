@@ -1,1 +1,22 @@
-<h1>chat plugin</h1>
+<div class="slack-chat-widget {{widgetState}}">
+  <div {{action 'toggleWidget'}} class="sc-header">
+
+    <span class="sc-open sc-arrow"></span>
+    <span class="sc-close sc-arrow"></span>
+    {{headerText}}
+    <img class="sc-profile" src="{{headerImage}}" alt="">
+  </div>
+  <div class="sc-body">
+    <div class="sc-messages">
+      {{#each messages as |message|}}
+      <p><strong>{{message.user}}:</strong> {{message.text}}</p>
+      {{else}}
+      <h3>{{emptyChatTopic}}</h3>
+      <p>{{emptyChatText}}</p>
+      {{/each}}
+    </div>
+    <div class="sc-new-message">
+      {{input class="sc-message-input" value=newMessage placeholder=inputPlaceholderText}}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,94 @@
+.slack-chat-widget{
+  $c-gray-lightest:#f7f7f7;
+  $c-gray-lighter:#f0f0f0;
+  $c-gray-light:#e8e8e8;
+  $c-gray:#e0e0e0;
+  $c-gray-dark:#4A4A4A;
+  $c-purple:#261732;
+  font-size:14px;
+  width:300px;
+  color:#fff;
+  box-sizing:border-box;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  box-shadow: rgba(0,0,0,0.2) 0 0 2px 2px;
+  *{
+    box-sizing:border-box;
+  }
+  &.open{
+    .sc-header{
+      .sc-close{
+        display:inline-block;
+      }
+    }
+    .sc-body{
+      display:block;
+    }
+  }
+  &.closed{
+    .sc-header{
+      .sc-open{
+        display:inline-block;
+      }
+    }
+  }
+  .sc-header{
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+    cursor:pointer;
+    position:relative;
+    padding:0.5em 1em;
+    line-height:1.5em;
+    background-color:$c-purple;
+    .sc-open, .sc-close{
+      display:none;
+      margin-right:1em;
+    }
+    .sc-profile{
+      position:absolute;
+      display:block;
+      border:2px solid $c-purple;
+      background-color:$c-gray-lightest;
+      border-radius:50%;
+      overflow:hidden;
+      width:50px;
+      height:50px;
+      right:1em;
+      top:-8px;
+      bottom:-10px;
+    }
+  }
+  .sc-body{
+    display:none;
+    color:#000;
+    background-color:#fff;
+    overflow:hidden;
+    padding:0 1em;
+    .sc-messages{
+      min-height:200px;
+      max-height:300px;
+      overflow-y:scroll;
+    }
+    .sc-new-message{
+      text-align:center;
+      padding-bottom:1em;
+      .sc-message-input{
+        padding:0.5em 1em;
+        width:100%;
+      }
+    }
+  }
+  .sc-arrow {
+    height: 0;
+    width: 0;
+    border: 6px solid transparent;
+    &.sc-open {
+      border-bottom-color: #fff;
+      vertical-align:top;
+    }
+    &.sc-close {
+      border-top-color: #fff;
+      vertical-align:bottom;
+    }
+  }
+}

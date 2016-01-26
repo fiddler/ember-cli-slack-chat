@@ -1,0 +1,11 @@
+@import 'addon/styles/addon.scss';
+
+body{
+  background-color:#ccc;
+}
+
+.slack-chat-widget{
+  position:absolute;
+  bottom:0px;
+  right:50px;
+}
