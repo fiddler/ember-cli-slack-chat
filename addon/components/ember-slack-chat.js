@@ -1,10 +1,24 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  _channel: 'C0K7N2UU9',
-  _latest: 0,
+  _channel: '',
+  _latest: Math.floor(Date.now() / 1000)+'.000000',
   messages: Ember.A([]),
+
+  setup: Ember.on('didInsertElement', function() {
+    this._super();
+    this.setupChat();
+  }),
+
   setupChat: function() {
+
+    // Check local storage, if we have chat history & channel data
+    if( localStorage && localStorage.getItem('slackChatData') ) {
+      let savedData = JSON.parse( localStorage.getItem('slackChatData') );
+      this.set('_channel', savedData.channel);
+      this.set('messages',Ember.A(savedData.messages));
+    }
+
     let defaults = {
       widgetState: 'closed',
       headerText: 'How can we help?',
@@ -13,6 +27,7 @@ export default Ember.Component.extend({
       emptyChatText: 'Questions? Just type it below and we\'ll answer you..',
       supportUserName: 'Wingmen',
       chatUserName: 'Me',
+      channelCreationCustomFields: false,
       inputPlaceholderText: 'Write message here...',
       serverUrl: ''
     };
@@ -22,9 +37,12 @@ export default Ember.Component.extend({
     this.setProperties(defaults);
   },
 
-  setup: Ember.on('didInsertElement', function() {
-    this._super();
-    this.setupChat();
+  messagesChanged: Ember.observer('messages.length', function() {
+    if( localStorage && localStorage.getItem('slackChatData') ) {
+       let data = JSON.parse( localStorage.getItem('slackChatData') );
+       data.messages = this.get('messages').toArray();
+       localStorage.setItem('slackChatData', JSON.stringify(data) );
+    }
   }),
 
   keyPress: function (e) {
@@ -41,45 +59,57 @@ export default Ember.Component.extend({
     return 'sup' + Date.now();
   },
 
-  sendUserInfo: function() {
-    // TODO: Send browser & other userinfo as a Slack attachment
-    //"attachments": [
-    //{
-    //"fallback": "ReferenceError - UI is not defined: https://honeybadger.io/path/to/event/",
-    //"text": "<https://honeybadger.io/path/to/event/|ReferenceError> - UI is not defined",
-    //"fields": [
-    //{
-    //"title": "Project",
-    //"value": "Awesome Project",
-    //"short": true
-    //},
-    //{
-    //"title": "Environment",
-    //"value": "production",
-    //"short": true
-    //}
-    //],
-    //"color": "#F35A00"
-    //}
-    //]
+  getInfo: function() {
+    return this.get('channelCreationCustomFields') || [
+      {
+        'fallback': '',
+        'text': '',
+        'fields': [
+          {
+            'title': 'URL',
+            'value': window.location.href,
+            'short': true
+          },
+          {
+            'title': 'UA',
+            'value': window.navigator.userAgent,
+            'short': true
+          },
+          {
+            'title': 'Language',
+            'value': window.navigator.language,
+            'short': true
+          }
+        ],
+        "color": "#F35A00"
+      }
+    ];
   },
 
-  sendMessage: function() {
+  sendMessage: function(includeInfo) {
 
     if( ! this.get('_channel') ) {
       Ember.$.post(this.get('serverUrl') + '/channels', { channel: this.generateChannel() }, (response) => {
-        console.log('CREATED channel', response);
         this.set('_channel', response.channel.id);
-        this.sendMessage();
+        if( localStorage ) {
+          localStorage.setItem('slackChatData', JSON.stringify({ channel: response.channel.id, messages: [] }) );
+        }
+        this.sendMessage(true);
       });
+      return;
     }
 
     let msg = this.get('newMessage');
+    let data = {
+      message: msg,
+      channel: this.get('_channel'),
+      attachments: includeInfo ? this.getInfo() : ''
+    };
     this.get('messages').addObject({ text:  msg, user: this.get('chatUserName') });
     this.set('newMessage','');
     this.scrollToBottom();
-    this.set('_latestMessage', Math.floor(Date.now() / 1000));
-    Ember.$.post(this.get('serverUrl') + '/message', { message: msg, channel: this.get('_channel') }, (response) => {
+    Ember.$.post(this.get('serverUrl') + '/message', data, (response) => {
+      this.set('_latestMessage', response.message.ts);
       this.startListening();
     });
   },
@@ -99,14 +129,14 @@ export default Ember.Component.extend({
   },
 
   getHistory: function() {
-    Ember.$.get(this.get('serverUrl') + '/channel/' + this.get('_channel') + '/messages', { latest: this.get('_latestMessage') }, (response) => {
+    Ember.$.get(this.get('serverUrl') + '/channel/' + this.get('_channel') + '/messages', { oldest: this.get('_latestMessage') }, (response) => {
       if( response.messages && response.messages.length ) {
-        this.set('_latestMessage', Math.floor(Date.now() / 1000));
         response.messages.forEach( (message) => {
           if( !( message.subtype && message.subtype === 'bot_message') ) {
             message.user = this.get('supportUserName');
             this.get('messages').addObject(message)
             this.scrollToBottom();
+            this.set('_latestMessage', message.ts);
           }
         });
       }
