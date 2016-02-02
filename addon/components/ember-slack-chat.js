@@ -47,7 +47,6 @@ export default Ember.Component.extend({
 
   keyPress: function (e) {
     if (e.which === 13) {
-      console.log('Send message');
       if( this.get('newMessage') ) {
         this.sendMessage();
       }
@@ -105,9 +104,11 @@ export default Ember.Component.extend({
       channel: this.get('_channel'),
       attachments: includeInfo ? this.getInfo() : ''
     };
+
     this.get('messages').addObject({ text:  msg, user: this.get('chatUserName') });
     this.set('newMessage','');
     this.scrollToBottom();
+
     Ember.$.post(this.get('serverUrl') + '/message', data, (response) => {
       this.set('_latestMessage', response.message.ts);
       this.startListening();
@@ -132,7 +133,7 @@ export default Ember.Component.extend({
     Ember.$.get(this.get('serverUrl') + '/channel/' + this.get('_channel') + '/messages', { oldest: this.get('_latestMessage') }, (response) => {
       if( response.messages && response.messages.length ) {
         response.messages.forEach( (message) => {
-          if( !( message.subtype && message.subtype === 'bot_message') ) {
+          if( message.subtype !== 'bot_message' && message.ts !== this.get('_latestMessage') ) {
             message.user = this.get('supportUserName');
             this.get('messages').addObject(message)
             this.scrollToBottom();
